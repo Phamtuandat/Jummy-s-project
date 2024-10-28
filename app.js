@@ -1,4 +1,5 @@
 const express = require("express");
+require("dotenv").config();
 const app = express();
 const { engine } = require("express-handlebars");
 const { createStarList } = require("./controllers/handlebarsHelper");
@@ -8,7 +9,7 @@ const redisStore = require("connect-redis").default;
 const { createClient } = require("redis");
 
 const redisClient = createClient({
-    url: "redis://red-csf3vg3tq21c738j99l0:6379",
+    url: process.env.REDIS_URL,
 });
 redisClient.connect().catch(console.error);
 app.use(express.static(__dirname + "/public"));
@@ -34,7 +35,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
     session({
-        secret: "S3cret",
+        secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: true,
         store: new redisStore({ client: redisClient }), // Use Redis for session storage.  // Use Redis for session storage.  // Use Redis for session storage.  // Use Redis for session storage.  // Use Redis for session storage.  // Use Redis for session storage.  // Use Redis for session storage.  // Use Redis for session storage.  // Use Redis for session storage.  // Use Redis for session storage.  // Use Redis for session storage.  //

@@ -7,6 +7,8 @@ const { createPagination } = require("express-handlebars-paginate");
 const session = require("express-session");
 const redisStore = require("connect-redis").default;
 const { createClient } = require("redis");
+const passport = require("passport");
+const flash = require("connect-flash");
 
 const redisClient = createClient({
     url: process.env.REDIS_URL,
@@ -45,13 +47,22 @@ app.use(
         }, // Set secure to false for development environment to allow cookie access from client-side (http) requests.  // Set secure to false for development environment to allow cookie access from client-side (http) requests.  // Set secure to false for development environment to allow cookie access from client-side (http) requests.  // Set secure to false for development environment to allow cookie access from client-side (http) requests.  // Set secure to false for development environment to allow cookie access from client-side (http) requests.  // Set secure to false for development environment to allow cookie access from client-side (http) requests.  // Set secure to false for development environment to allow cookie access from client-side (http) requests.  // Set secure to false for development environment to allow cookie access from client-side (http)
     }),
 );
+// config to use passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// config to use flash middleware
+app.use(flash());
+
 app.use((req, res, next) => {
     let Cart = require("./controllers/cart");
     req.session.cart = new Cart(req.session.cart ? req.session.cart : {});
     res.locals.quantity = req.session.cart.quantity;
+    res.locals.isLoggedIn = req.isAuthenticated();
     next();
 });
 app.use("/", require("./routes/indexRouter"));
+app.use("/user", require("./routes/authRouter"));
 app.use("/user", require("./routes/userRouter"));
 app.use("/products", require("./routes/productsRouter"));
 

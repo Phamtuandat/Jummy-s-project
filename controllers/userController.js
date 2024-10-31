@@ -1,12 +1,11 @@
 "use strict";
 
 let controller = {};
-const { where } = require("sequelize");
 const models = require("../models");
 
 controller.checkout = async (req, res) => {
     if (req.session.cart.quantity > 0) {
-        let userId = 1;
+        let userId = req.user.id;
         res.locals.address = await models.Address.findAll({
             where: { userId },
         });
@@ -16,7 +15,7 @@ controller.checkout = async (req, res) => {
     res.redirect("/products");
 };
 controller.placeOrder = async (req, res) => {
-    let userId = 1;
+    let userId = req.user.id;
     // let {addressId, payment} = req.body;
     let addressId = isNaN(req.body.addressId)
         ? 0
@@ -52,7 +51,7 @@ controller.placeOrder = async (req, res) => {
 };
 
 async function saveOders(req, res, status) {
-    let userId = 1;
+    let userId = req.user.id;
     let { items, ...orders } = req.session.cart.getCart();
     console.log(items);
     let order = await models.Order.create({

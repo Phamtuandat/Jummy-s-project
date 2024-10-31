@@ -70,3 +70,19 @@ async function placeorders(e) {
 
     e.target.submit();
 }
+
+function checkPasswordConfirmation(formId) {
+    console.log(formId);
+    let password = document.querySelector(`#${formId} [name=password]`);
+    let confirmPassword = document.querySelector(
+        `#${formId} [name=confirmPassword]`,
+    );
+    if (password.value != confirmPassword.value) {
+        document
+            .getElementById("confirmPassword")
+            .setCustomValidity("Passwords do not match");
+        confirmPassword.reportValidity();
+    } else {
+        confirmPassword.setCustomValidity("");
+    }
+}
